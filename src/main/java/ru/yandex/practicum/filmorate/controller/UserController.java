@@ -1,18 +1,17 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.data.UserData;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.ValidationService;
 
-import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
+@Slf4j
 public class UserController {
     UserData userData = new UserData();
     ValidationService validationService = new ValidationService();
@@ -20,6 +19,7 @@ public class UserController {
 
     @GetMapping
     public List<User> getAllUsers() {
+        log.info("Getting user");
         return userData.getAll();
     }
 
@@ -27,18 +27,24 @@ public class UserController {
     public User addUser(@RequestBody User user) {
         validationService.userValidate(user);
         user.setId(id++);
-        if (user.getName() == null)
+        if (user.getName() == null) {
+            log.info("User name set by login");
             user.setName(user.getLogin());
+        }
         userData.add(user);
+        log.info("User added");
         return user;
     }
 
     @PutMapping
     public User updateUser(@RequestBody User user) {
-        if (userData.getById(user.getId()) == null)
+        if (userData.getById(user.getId()) == null) {
+            log.info("User to update not found");
             throw new ValidationException();
+        }
         validationService.userValidate(user);
         userData.add(user);
+        log.info("User updated");
         return user;
     }
 }
