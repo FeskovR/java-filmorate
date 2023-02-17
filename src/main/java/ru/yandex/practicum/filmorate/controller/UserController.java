@@ -1,51 +1,44 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.data.UserData;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.ValidationService;
 
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
+@RequestMapping("/users")
 public class UserController {
-    Map<Integer, User> users = new HashMap<>();
+    UserData userData = new UserData();
+    ValidationService validationService = new ValidationService();
+    int id = 1;
 
-    @GetMapping("/users")
-    public Map<Integer, User> getAllUsers() {
-        return users;
+    @GetMapping
+    public List<User> getAllUsers() {
+        return userData.getAll();
     }
 
-    @PostMapping("/user")
+    @PostMapping
     public User addUser(@RequestBody User user) {
-        if (validateUser(user)) {
-            users.put(user.getId(), user);
-            return user;
-        } else {
-            throw new ValidationException();
-        }
+        validationService.userValidate(user);
+        user.setId(id++);
+        if (user.getName() == null)
+            user.setName(user.getLogin());
+        userData.add(user);
+        return user;
     }
 
-    @PutMapping("/user")
+    @PutMapping
     public User updateUser(@RequestBody User user) {
-        if (validateUser(user)) {
-            users.put(user.getId(), user);
-            return user;
-        } else {
+        if (userData.getById(user.getId()) == null)
             throw new ValidationException();
-        }
-    }
-
-    private boolean validateUser(User user) {
-        if (user.getEmail() != null || !user.getEmail().isBlank() &&
-            user.getEmail().contains("@") &&
-            !user.getLogin().isBlank() &&
-            !user.getLogin().contains(" ") &&
-            user.getBirthday().isBefore(LocalDate.now())) {
-            return true;
-        } else {
-            return false;
-        }
+        validationService.userValidate(user);
+        userData.add(user);
+        return user;
     }
 }

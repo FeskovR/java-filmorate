@@ -1,52 +1,42 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.data.FilmData;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.ValidationService;
 
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
+@RequestMapping("/films")
 public class FilmController {
-    Map<Integer, Film> films = new HashMap<>();
+    FilmData filmData = new FilmData();
+    ValidationService validationService = new ValidationService();
+    int id = 1;
 
-    @GetMapping("/film")
-    public Map<Integer, Film> getAllFilms() {
-        return films;
+    @GetMapping
+    public List<Film> getAllFilms() {
+        return filmData.getAll();
     }
 
-    @PostMapping("/film")
+    @PostMapping
     public Film addFilm(@RequestBody Film film) {
-        if (validateFilm(film)) {
-            films.put(film.getId(), film);
-            return film;
-        } else {
-            throw new ValidationException();
-        }
+        validationService.filmValidate(film);
+        film.setId(id++);
+        filmData.add(film);
+        return film;
     }
 
-    @PutMapping("/film")
+    @PutMapping
     public Film updateFilm(@RequestBody Film film) {
-        if (validateFilm(film)) {
-            films.put(film.getId(), film);
-            return film;
-        } else {
+        if (filmData.getById(film.getId()) == null)
             throw new ValidationException();
-        }
-    }
-
-    private boolean validateFilm(Film film) {
-        LocalDate limitDate = LocalDate.of(1895, 12, 28);
-        if (film.getName() != null || !film.getName().isBlank() &&
-                film.getDescription().length() <= 200 &&
-                film.getReleaseDate().isAfter(limitDate) &&
-                film.getDuration() > 0 ) {
-            films.put(film.getId(), film);
-            return true;
-        } else {
-            return false;
-        }
+        validationService.filmValidate(film);
+        filmData.add(film);
+        return film;
     }
 }
