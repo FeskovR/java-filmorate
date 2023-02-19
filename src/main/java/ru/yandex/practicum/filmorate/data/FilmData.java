@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.data;
 
+import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.ArrayList;
@@ -7,6 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+@Component
 public class FilmData {
     Map<Integer, Film> films = new LinkedHashMap<>();
 

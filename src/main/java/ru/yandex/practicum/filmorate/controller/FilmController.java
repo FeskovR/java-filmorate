@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.data.FilmData;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
@@ -13,8 +14,8 @@ import java.util.List;
 @RequestMapping("/films")
 @Slf4j
 public class FilmController {
-    FilmData filmData = new FilmData();
-    ValidationService validationService = new ValidationService();
+    @Autowired
+    FilmData filmData;
     int id = 1;
 
     @GetMapping
@@ -25,7 +26,7 @@ public class FilmController {
 
     @PostMapping
     public Film addFilm(@RequestBody Film film) {
-        validationService.filmValidate(film);
+        ValidationService.validate(film);
         film.setId(id++);
         filmData.add(film);
         log.info("Film added");
@@ -38,7 +39,7 @@ public class FilmController {
             log.info("Film to update not found");
             throw new ValidationException();
         }
-        validationService.filmValidate(film);
+        ValidationService.validate(film);
         filmData.add(film);
         log.info("Film updated");
         return film;

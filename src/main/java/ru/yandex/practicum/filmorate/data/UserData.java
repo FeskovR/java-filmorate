@@ -1,13 +1,14 @@
 package ru.yandex.practicum.filmorate.data;
 
+import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+@Component
 public class UserData {
     Map<Integer, User> users = new LinkedHashMap<>();
 
@@ -20,7 +21,6 @@ public class UserData {
     }
 
     public List<User> getAll() {
-        List<User> usersList = new ArrayList<>(users.values());
-        return usersList;
+        return new ArrayList<>(users.values());
     }
 }

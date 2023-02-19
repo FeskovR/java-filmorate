@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.data.UserData;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
@@ -13,8 +14,8 @@ import java.util.List;
 @RequestMapping("/users")
 @Slf4j
 public class UserController {
-    UserData userData = new UserData();
-    ValidationService validationService = new ValidationService();
+    @Autowired
+    UserData userData;
     int id = 1;
 
     @GetMapping
@@ -25,7 +26,7 @@ public class UserController {
 
     @PostMapping
     public User addUser(@RequestBody User user) {
-        validationService.userValidate(user);
+        ValidationService.validate(user);
         user.setId(id++);
         if (user.getName() == null) {
             log.info("User name set by login");
@@ -42,7 +43,7 @@ public class UserController {
             log.info("User to update not found");
             throw new ValidationException();
         }
-        validationService.userValidate(user);
+        ValidationService.validate(user);
         userData.add(user);
         log.info("User updated");
         return user;
