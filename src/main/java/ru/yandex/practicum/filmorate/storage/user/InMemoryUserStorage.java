@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.data;
+package ru.yandex.practicum.filmorate.storage.user;
 
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.User;
@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public class UserData {
+public class InMemoryUserStorage implements UserStorage {
     Map<Integer, User> users = new LinkedHashMap<>();
 
     public void add(User user) {
