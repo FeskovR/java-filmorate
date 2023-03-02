@@ -10,17 +10,25 @@ import java.util.Map;
 
 @Component
 public class InMemoryUserStorage implements UserStorage {
-    Map<Integer, User> users = new LinkedHashMap<>();
+    Map<Long, User> users = new LinkedHashMap<>();
 
+    @Override
     public void add(User user) {
         users.put(user.getId(), user);
     }
 
-    public User getById(int id) {
+    @Override
+    public User getById(long id) {
         return users.get(id);
     }
 
-    public List<User> getAll() {
+    @Override
+    public List<User> findAll() {
         return new ArrayList<>(users.values());
+    }
+
+    @Override
+    public void delete(long id) {
+        users.remove(id);
     }
 }
