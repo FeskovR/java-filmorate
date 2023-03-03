@@ -8,5 +8,4 @@ public interface UserStorage {
     void add(User user);
     User getById(long id);
     List<User> findAll();
-    void delete(long id);
 }
