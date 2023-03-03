@@ -10,17 +10,17 @@ import java.util.Map;
 
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
-    Map<Integer, Film> films = new LinkedHashMap<>();
+    Map<Long, Film> films = new LinkedHashMap<>();
 
     public void add(Film film) {
         films.put(film.getId(), film);
     }
 
-    public Film getById(int id) {
+    public Film getById(long id) {
         return films.get(id);
     }
 
-    public List<Film> getAll() {
+    public List<Film> findAll() {
         return new ArrayList<>(films.values());
     }
 }
