@@ -17,24 +17,24 @@ public class ValidationService {
 
     public static void validate(User user) {
         if (user.getEmail() == null ||
-                user.getEmail().isBlank() ||
-                !user.getEmail().contains("@") ||
-                user.getLogin().isBlank() ||
-                user.getLogin().contains(" ") ||
-                user.getBirthday().isAfter(LocalDate.now())) {
-            log.warn(USER_VALIDATION_MESSAGE);
-            throw new ValidationException(USER_VALIDATION_MESSAGE);
+            user.getEmail().isBlank() ||
+            !user.getEmail().contains("@") ||
+            user.getLogin().isBlank() ||
+            user.getLogin().contains(" ") ||
+            user.getBirthday().isAfter(LocalDate.now())) {
+                log.warn(USER_VALIDATION_MESSAGE);
+                throw new ValidationException(USER_VALIDATION_MESSAGE);
         }
     }
 
     public static void validate(Film film) {
         if (film.getName() == null ||
-                film.getName().isBlank() ||
-                film.getDescription().length() > 200 ||
-                film.getReleaseDate().isBefore(LIMIT_DATE) ||
-                film.getDuration() <= 0) {
-            log.warn(FILM_VALIDATION_MESSAGE);
-            throw new ValidationException(FILM_VALIDATION_MESSAGE);
+            film.getName().isBlank() ||
+            film.getDescription().length() > 200 ||
+            film.getReleaseDate().isBefore(LIMIT_DATE) ||
+            film.getDuration() <= 0) {
+                log.warn(FILM_VALIDATION_MESSAGE);
+                throw new ValidationException(FILM_VALIDATION_MESSAGE);
         }
     }
 }

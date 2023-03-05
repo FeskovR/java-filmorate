@@ -11,32 +11,34 @@ import java.util.List;
 @Service
 public class UserService {
     @Autowired
-    private UserStorage inMemoryUserStorage;
+    private UserStorage userStorage;
     long id = 1;
 
     public List<User> findAll() {
-        return inMemoryUserStorage.findAll();
+        return userStorage.findAll();
     }
 
     public User add(User user) {
+        ValidationService.validate(user);
         user.setId(id++);
         if (user.getName() == null || user.getName().equals("")) {
             user.setName(user.getLogin());
         }
-        inMemoryUserStorage.add(user);
+        userStorage.add(user);
         return user;
     }
 
     public User update(User user) {
-        if (inMemoryUserStorage.getById(user.getId()) == null) {
+        ValidationService.validate(user);
+        if (userStorage.getById(user.getId()) == null) {
             throw new RuntimeException("User for update not found");
         }
-        inMemoryUserStorage.add(user);
+        userStorage.add(user);
         return user;
     }
 
     public User findById(long id) {
-        User user = inMemoryUserStorage.getById(id);
+        User user = userStorage.getById(id);
         if (user == null) {
             throw new RuntimeException("User by id: " + id + " not found");
         }
@@ -44,8 +46,8 @@ public class UserService {
     }
 
     public void addToFriends(long userId1, long userId2) {
-        User user1 = inMemoryUserStorage.getById(userId1);
-        User user2 = inMemoryUserStorage.getById(userId2);
+        User user1 = userStorage.getById(userId1);
+        User user2 = userStorage.getById(userId2);
 
         if (user1 == null || user2 == null) {
             throw new RuntimeException("Невозможно добавить пользователя в друзья т.к. один из пользователей не найден");
@@ -56,8 +58,8 @@ public class UserService {
     }
 
     public void deleteFromFriends(long userId1, long userId2) {
-        User user1 = inMemoryUserStorage.getById(userId1);
-        User user2 = inMemoryUserStorage.getById(userId2);
+        User user1 = userStorage.getById(userId1);
+        User user2 = userStorage.getById(userId2);
 
         if (user1 == null || user2 == null) {
             throw new RuntimeException("Невозможно удалить пользователя из друзей т.к. один из пользователей не найден");
@@ -68,14 +70,14 @@ public class UserService {
     }
 
     public List<User> findAllFriends(long userId) {
-        User user = inMemoryUserStorage.getById(userId);
+        User user = userStorage.getById(userId);
         List<User> users = new ArrayList<>();
 
         if (user == null)
             throw new RuntimeException("Пользователь не найден");
 
         for (Long friendId : user.getFriends()) {
-            users.add(inMemoryUserStorage.getById(friendId));
+            users.add(userStorage.getById(friendId));
         }
 
         return users;

@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.service.ValidationService;
 
 import java.util.List;
 
@@ -13,8 +12,12 @@ import java.util.List;
 @RequestMapping
 @Slf4j
 public class FilmController {
-    @Autowired
     FilmService filmService;
+
+    @Autowired
+    public FilmController(FilmService filmService) {
+        this.filmService = filmService;
+    }
 
     @GetMapping("/films")
     public List<Film> findAll() {
@@ -24,20 +27,19 @@ public class FilmController {
 
     @GetMapping("/films/{id}")
     public Film findById(@PathVariable long id){
-        log.info("Getting film by id");
+        log.info("Getting film by id: " + id);
         return filmService.findById(id);
     }
 
     @PostMapping("/films")
     public Film add(@RequestBody Film film) {
-        ValidationService.validate(film);
-        log.info("Adding film");
+        log.info("Adding film " + film.getName());
         return filmService.add(film);
     }
 
     @PutMapping("/films")
     public Film update(@RequestBody Film film) {
-        log.info("Updating film");
+        log.info("Updating film " + film.getName());
         return filmService.update(film);
     }
 
@@ -55,9 +57,7 @@ public class FilmController {
 
     @GetMapping("/films/popular")
     public List<Film> getTopFilms(@RequestParam(required = false) Integer count) {
-        if (count == null) {
-            count = 10;
-        }
+        if (count == null) count = 10;
         log.info("Getting top " + count + " films");
         return filmService.getTopFilms(count);
     }

@@ -12,17 +12,17 @@ import java.util.List;
 @Service
 public class FilmService {
     @Autowired
-    FilmStorage inMemoryFilmStorage;
+    FilmStorage filmStorage;
     @Autowired
-    UserStorage inMemoryUserStorage;
+    UserStorage userStorage;
     long id = 1;
 
     public List<Film> findAll() {
-        return inMemoryFilmStorage.findAll();
+        return filmStorage.findAll();
     }
 
     public Film findById(long id) {
-        Film film = inMemoryFilmStorage.getById(id);
+        Film film = filmStorage.getById(id);
         if (film == null) {
             throw new RuntimeException("Film is not found");
         }
@@ -30,24 +30,26 @@ public class FilmService {
     }
 
     public Film add(Film film) {
+        ValidationService.validate(film);
         film.setId(id++);
-        inMemoryFilmStorage.add(film);
+        filmStorage.add(film);
         return film;
     }
 
     public Film update(Film film) {
-        if (inMemoryFilmStorage.getById(film.getId()) == null) {
+        ValidationService.validate(film);
+        if (filmStorage.getById(film.getId()) == null) {
             throw new RuntimeException("Фильм для обновления не найден");
         }
-        inMemoryFilmStorage.add(film);
+        filmStorage.add(film);
         return film;
     }
 
     public void likeFilm(long id, long userId) {
-        if (inMemoryUserStorage.getById(userId) == null) {
+        if (userStorage.getById(userId) == null) {
             throw new RuntimeException("User is not found");
         }
-        Film film = inMemoryFilmStorage.getById(id);
+        Film film = filmStorage.getById(id);
         if (film == null) {
             throw new RuntimeException("Film is not found");
         }
@@ -55,10 +57,10 @@ public class FilmService {
     }
 
     public void removeLike(long id, long userId) {
-        if (inMemoryUserStorage.getById(userId) == null) {
+        if (userStorage.getById(userId) == null) {
             throw new RuntimeException("User is not found");
         }
-        Film film = inMemoryFilmStorage.getById(id);
+        Film film = filmStorage.getById(id);
         if (film == null) {
             throw new RuntimeException("Film is not found");
         }
@@ -67,7 +69,7 @@ public class FilmService {
 
     public List<Film> getTopFilms(int count) {
         List<Film> topFilms = new ArrayList<>();
-        List<Film> allFilms = inMemoryFilmStorage.findAll();
+        List<Film> allFilms = filmStorage.findAll();
 
         allFilms.sort((Film film1, Film film2) -> film2.getUsersWhoLikes().size() - film1.getUsersWhoLikes().size());
 

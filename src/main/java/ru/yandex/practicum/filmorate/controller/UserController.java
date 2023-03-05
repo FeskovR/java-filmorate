@@ -5,15 +5,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
-import ru.yandex.practicum.filmorate.service.ValidationService;
 
 import java.util.List;
 
 @RestController
 @Slf4j
 public class UserController {
-    @Autowired
     UserService userService;
+
+    @Autowired
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping("/users")
     public List<User> findAll() {
@@ -23,14 +26,12 @@ public class UserController {
 
     @PostMapping("/users")
     public User add(@RequestBody User user) {
-        ValidationService.validate(user);
         log.info("Adding new user");
         return userService.add(user);
     }
 
     @PutMapping("/users")
     public User update(@RequestBody User user) {
-        ValidationService.validate(user);
         log.info("User id: " + user.getId() + " updating");
         return userService.update(user);
     }
