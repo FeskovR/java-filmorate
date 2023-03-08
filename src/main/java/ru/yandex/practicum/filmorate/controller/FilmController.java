@@ -3,45 +3,62 @@ package ru.yandex.practicum.filmorate.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.data.FilmData;
-import ru.yandex.practicum.filmorate.exceptions.ValidationException;
+import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.service.ValidationService;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/films")
+@RequestMapping
 @Slf4j
 public class FilmController {
+    FilmService filmService;
+
     @Autowired
-    FilmData filmData;
-    int id = 1;
+    public FilmController(FilmService filmService) {
+        this.filmService = filmService;
+    }
 
-    @GetMapping
-    public List<Film> getAllFilms() {
+    @GetMapping("/films")
+    public List<Film> findAll() {
         log.info("Getting film");
-        return filmData.getAll();
+        return filmService.findAll();
     }
 
-    @PostMapping
-    public Film addFilm(@RequestBody Film film) {
-        ValidationService.validate(film);
-        film.setId(id++);
-        filmData.add(film);
-        log.info("Film added");
-        return film;
+    @GetMapping("/films/{id}")
+    public Film findById(@PathVariable long id){
+        log.info("Getting film by id: " + id);
+        return filmService.findById(id);
     }
 
-    @PutMapping
-    public Film updateFilm(@RequestBody Film film) {
-        if (filmData.getById(film.getId()) == null) {
-            log.info("Film to update not found");
-            throw new ValidationException();
-        }
-        ValidationService.validate(film);
-        filmData.add(film);
-        log.info("Film updated");
-        return film;
+    @PostMapping("/films")
+    public Film add(@RequestBody Film film) {
+        log.info("Adding film " + film.getName());
+        return filmService.add(film);
+    }
+
+    @PutMapping("/films")
+    public Film update(@RequestBody Film film) {
+        log.info("Updating film " + film.getName());
+        return filmService.update(film);
+    }
+
+    @PutMapping("/films/{id}/like/{userId}")
+    public void likeFilm(@PathVariable long id, @PathVariable long userId) {
+        log.info("User id: " + userId + " like film id: " + id);
+        filmService.likeFilm(id, userId);
+    }
+
+    @DeleteMapping("/films/{id}/like/{userId}")
+    public void removeLike(@PathVariable long id, @PathVariable long userId) {
+        log.info("User id: " + userId + " dislike film id: " + id);
+        filmService.removeLike(id, userId);
+    }
+
+    @GetMapping("/films/popular")
+    public List<Film> getTopFilms(@RequestParam(required = false) Integer count) {
+        if (count == null) count = 10;
+        log.info("Getting top " + count + " films");
+        return filmService.getTopFilms(count);
     }
 }
