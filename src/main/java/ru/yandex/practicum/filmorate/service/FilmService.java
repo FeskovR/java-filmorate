@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
@@ -12,8 +13,10 @@ import java.util.List;
 @Service
 public class FilmService {
     @Autowired
+    @Qualifier("FilmDbStorage")
     FilmStorage filmStorage;
     @Autowired
+    @Qualifier("UserDbStorage")
     UserStorage userStorage;
     long id = 1;
 
@@ -31,9 +34,8 @@ public class FilmService {
 
     public Film add(Film film) {
         ValidationService.validate(film);
-        film.setId(id++);
-        filmStorage.add(film);
-        return film;
+//        film.setId(id++);
+        return filmStorage.add(film);
     }
 
     public Film update(Film film) {
@@ -41,37 +43,36 @@ public class FilmService {
         if (filmStorage.getById(film.getId()) == null) {
             throw new RuntimeException("Фильм для обновления не найден");
         }
-        filmStorage.add(film);
-        return film;
+        return filmStorage.update(film);
     }
 
     public void likeFilm(long id, long userId) {
-        if (userStorage.getById(userId) == null) {
+        if (userStorage.findById(userId) == null) {
             throw new RuntimeException("User is not found");
         }
         Film film = filmStorage.getById(id);
         if (film == null) {
             throw new RuntimeException("Film is not found");
         }
-        film.addToUsersWhoLikes(userId);
+//        film.addToUsersWhoLikes(userId);
     }
 
     public void removeLike(long id, long userId) {
-        if (userStorage.getById(userId) == null) {
+        if (userStorage.findById(userId) == null) {
             throw new RuntimeException("User is not found");
         }
         Film film = filmStorage.getById(id);
         if (film == null) {
             throw new RuntimeException("Film is not found");
         }
-        film.removeFromUsersWhoLikes(userId);
+//        film.removeFromUsersWhoLikes(userId);
     }
 
     public List<Film> getTopFilms(int count) {
         List<Film> topFilms = new ArrayList<>();
         List<Film> allFilms = filmStorage.findAll();
 
-        allFilms.sort((Film film1, Film film2) -> film2.getUsersWhoLikes().size() - film1.getUsersWhoLikes().size());
+//        allFilms.sort((Film film1, Film film2) -> film2.getUsersWhoLikes().size() - film1.getUsersWhoLikes().size());
 
         if (allFilms.size() > count) {
             for (int i = 0; i < count; i++) {

@@ -1,9 +1,12 @@
 package ru.yandex.practicum.filmorate.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -13,17 +16,33 @@ public class Film {
     String description;
     LocalDate releaseDate;
     int duration;
-    Set<Long> usersWhoLikes = new HashSet<>();
+    Mpa mpa;
+    List<Genre> genres = new ArrayList<>();
 
-    public Set<Long> getUsersWhoLikes() {
-        return usersWhoLikes;
+    public Film(long id, String name, String description, LocalDate releaseDate, int duration, Mpa mpa) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.releaseDate = releaseDate;
+        this.duration = duration;
+        this.mpa = mpa;
     }
 
-    public void addToUsersWhoLikes(long id) {
-        usersWhoLikes.add(id);
+    public void addGenre(Genre genre) {
+        genres.add(genre);
     }
 
-    public void removeFromUsersWhoLikes(long id) {
-        usersWhoLikes.remove(id);
-    }
+//    Set<Long> usersWhoLikes = new HashSet<>();
+//
+//    public Set<Long> getUsersWhoLikes() {
+//        return usersWhoLikes;
+//    }
+//
+//    public void addToUsersWhoLikes(long id) {
+//        usersWhoLikes.add(id);
+//    }
+//
+//    public void removeFromUsersWhoLikes(long id) {
+//        usersWhoLikes.remove(id);
+//    }
 }

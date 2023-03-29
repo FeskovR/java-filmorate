@@ -13,17 +13,26 @@ public class User {
     private String login;
     private String name;
     private LocalDate birthday;
-    private final Set<Long> friends = new HashSet<>();
 
-    public Set<Long> getFriends() {
-        return friends;
+    public User(long id, String email, String login, String name, LocalDate birthday) {
+        this.id = id;
+        this.email = email;
+        this.login = login;
+        this.name = name;
+        this.birthday = birthday;
     }
 
-    public void addFriend(Long id) {
-        friends.add(id);
-    }
-
-    public void removeFriend(Long id) {
-        friends.remove(id);
-    }
+    //    private final Set<Long> friends = new HashSet<>();
+//
+//    public Set<Long> getFriends() {
+//        return friends;
+//    }
+//
+//    public void addFriend(Long id) {
+//        friends.add(id);
+//    }
+//
+//    public void removeFriend(Long id) {
+//        friends.remove(id);
+//    }
 }
