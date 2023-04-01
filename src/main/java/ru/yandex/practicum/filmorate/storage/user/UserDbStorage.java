@@ -60,7 +60,7 @@ public class UserDbStorage implements UserStorage {
         List<User> users = new ArrayList<>();
         String sqlQuery = "select * from users";
         SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sqlQuery);
-        while(rowSet.next()) {
+        while (rowSet.next()) {
             LocalDate birthday = dateFormatter(rowSet.getString("birthday"));
             users.add(new User(rowSet.getLong("user_id"),
                     rowSet.getString("email"),
@@ -82,7 +82,7 @@ public class UserDbStorage implements UserStorage {
                 user.getId());
     }
 
-    private LocalDate dateFormatter (String date) {
+    private LocalDate dateFormatter(String date) {
         String[] parts = new String[3];
         parts = date.split("-");
         LocalDate localDate = LocalDate.of(Integer.parseInt(parts[0]),
