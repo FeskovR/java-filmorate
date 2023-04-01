@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class GenreImpl implements GenreDao{
+public class GenreImpl implements GenreDao {
     JdbcTemplate jdbcTemplate;
 
     public GenreImpl(JdbcTemplate jdbcTemplate) {

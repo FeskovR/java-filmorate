@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class LikeImpl implements LikeDao{
+public class LikeImpl implements LikeDao {
     JdbcTemplate jdbcTemplate;
     @Autowired
     @Qualifier("FilmDbStorage")
