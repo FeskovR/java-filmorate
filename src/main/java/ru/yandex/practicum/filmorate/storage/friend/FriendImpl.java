@@ -54,7 +54,7 @@ public class FriendImpl implements FriendDao {
         return friends;
     }
 
-    private LocalDate dateFormatter (String date) {
+    private LocalDate dateFormatter(String date) {
         String[] parts = new String[3];
         parts = date.split("-");
         LocalDate localDate = LocalDate.of(Integer.parseInt(parts[0]),
