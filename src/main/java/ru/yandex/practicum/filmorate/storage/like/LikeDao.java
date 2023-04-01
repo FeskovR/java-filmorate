@@ -6,6 +6,8 @@ import java.util.List;
 
 public interface LikeDao {
     void addLikeToFilm(Long filmId, Long userId);
+
     void removeLikeFromFilm(Long filmId, Long userId);
+
     List<Film> getTopFilms(int count);
 }
