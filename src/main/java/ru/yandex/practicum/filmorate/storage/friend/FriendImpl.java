@@ -18,30 +18,30 @@ public class FriendImpl implements FriendDao {
     }
 
     @Override
-    public void addToFriends(long user_id, long friend_id) {
+    public void addToFriends(long userId, long friendId) {
         String sqlQuery = "insert into friendships (user_id, friend_id, status) values (?, ?, ?)";
         jdbcTemplate.update(sqlQuery,
-                user_id,
-                friend_id,
+                userId,
+                friendId,
                 "unconfirmed");
     }
 
     @Override
-    public void removeFromFriends(long user_id, long friend_id) {
+    public void removeFromFriends(long userId, long friendId) {
         String sqlQuery = "delete from friendships where user_id = ? and friend_id = ?";
         jdbcTemplate.update(sqlQuery,
-                user_id,
-                friend_id);
+                userId,
+                friendId);
     }
 
     @Override
-    public List<User> findAllFriends(long user_id) {
+    public List<User> findAllFriends(long userId) {
         List<User> friends = new ArrayList<>();
         String sqlQuery = "select us.* " +
                 "from friendships as fr " +
                 "join users as us on fr.friend_id=us.user_id " +
                 "where fr.user_id = ?";
-        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sqlQuery, user_id);
+        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sqlQuery, userId);
         while (rowSet.next()) {
             LocalDate birthday = dateFormatter(rowSet.getString("birthday"));
             User friend = new User(rowSet.getLong("user_id"),
