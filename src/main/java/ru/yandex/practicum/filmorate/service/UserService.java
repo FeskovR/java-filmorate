@@ -17,7 +17,6 @@ public class UserService {
     private UserStorage userStorage;
     @Autowired
     private FriendDao friendImpl;
-//    long id = 1;
 
     public List<User> findAll() {
         return userStorage.findAll();
@@ -25,7 +24,6 @@ public class UserService {
 
     public User add(User user) {
         ValidationService.validate(user);
-//        user.setId(id++);
         if (user.getName() == null || user.getName().equals("")) {
             user.setName(user.getLogin());
         }
@@ -59,8 +57,6 @@ public class UserService {
         }
 
         friendImpl.addToFriends(userId1, userId2);
-//        user1.addFriend(userId2);
-//        user2.addFriend(userId1);
     }
 
     public void deleteFromFriends(long userId1, long userId2) {
@@ -72,25 +68,15 @@ public class UserService {
         }
 
         friendImpl.removeFromFriends(userId1, userId2);
-
-//        user1.removeFriend(userId2);
-//        user2.removeFriend(userId1);
     }
 
     public List<User> findAllFriends(long userId) {
         User user = userStorage.findById(userId);
-//        List<User> users = new ArrayList<>();
 
         if (user == null)
             throw new RuntimeException("Пользователь не найден");
 
-//        for (Long friendId : user.getFriends()) {
-//            users.add(userStorage.findById(friendId));
-//        }
-
         return friendImpl.findAllFriends(userId);
-
-//        return users;
     }
 
     public List<User> commonFriends(long userId1, long userId2) {

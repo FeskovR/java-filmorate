@@ -5,9 +5,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.like.LikeDao;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -18,7 +18,8 @@ public class FilmService {
     @Autowired
     @Qualifier("UserDbStorage")
     UserStorage userStorage;
-    long id = 1;
+    @Autowired
+    LikeDao likeImpl;
 
     public List<Film> findAll() {
         return filmStorage.findAll();
@@ -34,7 +35,6 @@ public class FilmService {
 
     public Film add(Film film) {
         ValidationService.validate(film);
-//        film.setId(id++);
         return filmStorage.add(film);
     }
 
@@ -54,7 +54,7 @@ public class FilmService {
         if (film == null) {
             throw new RuntimeException("Film is not found");
         }
-//        film.addToUsersWhoLikes(userId);
+        likeImpl.addLikeToFilm(id, userId);
     }
 
     public void removeLike(long id, long userId) {
@@ -65,22 +65,10 @@ public class FilmService {
         if (film == null) {
             throw new RuntimeException("Film is not found");
         }
-//        film.removeFromUsersWhoLikes(userId);
+        likeImpl.removeLikeFromFilm(id, userId);
     }
 
     public List<Film> getTopFilms(int count) {
-        List<Film> topFilms = new ArrayList<>();
-        List<Film> allFilms = filmStorage.findAll();
-
-//        allFilms.sort((Film film1, Film film2) -> film2.getUsersWhoLikes().size() - film1.getUsersWhoLikes().size());
-
-        if (allFilms.size() > count) {
-            for (int i = 0; i < count; i++) {
-                topFilms.add(allFilms.get(i));
-            }
-        } else {
-            topFilms.addAll(allFilms);
-        }
-        return topFilms;
+        return likeImpl.getTopFilms(count);
     }
 }

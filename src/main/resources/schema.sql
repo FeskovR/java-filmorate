@@ -1,3 +1,11 @@
+DROP TABLE IF EXISTS friendships CASCADE;
+DROP TABLE IF EXISTS likes CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
+DROP TABLE IF EXISTS film_genre CASCADE;
+DROP TABLE IF EXISTS genre CASCADE;
+DROP TABLE IF EXISTS films CASCADE;
+DROP TABLE IF EXISTS mpa CASCADE;
+
 CREATE TABLE IF NOT EXISTS mpa (
     mpa_id INTEGER   NOT NULL,
     mpa_name VARCHAR(10)   NOT NULL,
@@ -23,7 +31,6 @@ CREATE TABLE IF NOT EXISTS genre (
 CREATE TABLE IF NOT EXISTS film_genre (
     film_id int   NOT NULL,
     genre_id int   NOT NULL,
-    CONSTRAINT pk_film_genre PRIMARY KEY (film_id),
     CONSTRAINT fk_film_genre_film_id FOREIGN KEY(film_id) REFERENCES films (film_id),
     CONSTRAINT fk_film_genre_genre_id FOREIGN KEY(genre_id) REFERENCES genre (genre_id)
 );
