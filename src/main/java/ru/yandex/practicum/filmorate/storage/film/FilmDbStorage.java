@@ -14,7 +14,7 @@ import java.util.List;
 
 @Component("FilmDbStorage")
 @Slf4j
-public class FilmDbStorage implements FilmStorage{
+public class FilmDbStorage implements FilmStorage {
     private final JdbcTemplate jdbcTemplate;
 
     public FilmDbStorage(JdbcTemplate jdbcTemplate) {
@@ -87,8 +87,8 @@ public class FilmDbStorage implements FilmStorage{
         List<Film> films = new ArrayList<>();
         String sqlQuery = "select * from films";
         SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sqlQuery);
-        while(rowSet.next()) {
-            LocalDate release_date = dateFormatter(rowSet.getString("release_date"));
+        while (rowSet.next()) {
+            LocalDate releaseDate = dateFormatter(rowSet.getString("release_date"));
 
             String mpaSqlQuery = "select * from mpa where mpa_id = ?";
             SqlRowSet mpaRowSet = jdbcTemplate.queryForRowSet(mpaSqlQuery, rowSet.getInt("mpa_id"));
@@ -100,7 +100,7 @@ public class FilmDbStorage implements FilmStorage{
             Film film = new Film(rowSet.getLong("film_id"),
                     rowSet.getString("name"),
                     rowSet.getString("description"),
-                    release_date,
+                    releaseDate,
                     rowSet.getInt("duration"),
                     mpa);
 
@@ -153,7 +153,7 @@ public class FilmDbStorage implements FilmStorage{
         return film;
     }
 
-    private LocalDate dateFormatter (String date) {
+    private LocalDate dateFormatter(String date) {
         String[] parts = new String[3];
         parts = date.split("-");
         LocalDate localDate = LocalDate.of(Integer.parseInt(parts[0]),
@@ -162,7 +162,7 @@ public class FilmDbStorage implements FilmStorage{
         return localDate;
     }
 
-    private List<Genre> getUniqueGenres (List<Genre> genres) {
+    private List<Genre> getUniqueGenres(List<Genre> genres) {
         List<Genre> uniqueGenres = new ArrayList<>();
         for (Genre genre : genres) {
             if (!uniqueGenres.contains(genre)) {
