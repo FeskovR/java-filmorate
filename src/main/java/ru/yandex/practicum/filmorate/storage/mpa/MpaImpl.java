@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class MpaImpl implements MpaDao{
+public class MpaImpl implements MpaDao {
     JdbcTemplate jdbcTemplate;
 
     public MpaImpl(JdbcTemplate jdbcTemplate) {
