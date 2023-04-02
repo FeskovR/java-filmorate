@@ -4,22 +4,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.like.LikeDao;
-import ru.yandex.practicum.filmorate.storage.user.UserStorage;
+import ru.yandex.practicum.filmorate.storage.interfaces.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.interfaces.LikeStorage;
+import ru.yandex.practicum.filmorate.storage.interfaces.UserStorage;
 
 import java.util.List;
 
 @Service
 public class FilmService {
+    private FilmStorage filmStorage;
+    private UserStorage userStorage;
+    private LikeStorage likeStorage;
+
     @Autowired
-    @Qualifier("FilmDbStorage")
-    FilmStorage filmStorage;
-    @Autowired
-    @Qualifier("UserDbStorage")
-    UserStorage userStorage;
-    @Autowired
-    LikeDao likeImpl;
+    public FilmService(@Qualifier("FilmDbStorage") FilmStorage filmStorage,
+                       @Qualifier("UserDbStorage") UserStorage userStorage,
+                       LikeStorage likeStorage) {
+        this.filmStorage = filmStorage;
+        this.userStorage = userStorage;
+        this.likeStorage = likeStorage;
+    }
 
     public List<Film> findAll() {
         return filmStorage.findAll();
@@ -54,7 +58,7 @@ public class FilmService {
         if (film == null) {
             throw new RuntimeException("Film is not found");
         }
-        likeImpl.addLikeToFilm(id, userId);
+        likeStorage.addLikeToFilm(id, userId);
     }
 
     public void removeLike(long id, long userId) {
@@ -65,10 +69,10 @@ public class FilmService {
         if (film == null) {
             throw new RuntimeException("Film is not found");
         }
-        likeImpl.removeLikeFromFilm(id, userId);
+        likeStorage.removeLikeFromFilm(id, userId);
     }
 
     public List<Film> getTopFilms(int count) {
-        return likeImpl.getTopFilms(count);
+        return likeStorage.getTopFilms(count);
     }
 }

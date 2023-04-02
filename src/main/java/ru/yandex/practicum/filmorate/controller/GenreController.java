@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 public class GenreController {
-    final GenreService genreService;
+    private final GenreService genreService;
 
     public GenreController(GenreService genreService) {
         this.genreService = genreService;

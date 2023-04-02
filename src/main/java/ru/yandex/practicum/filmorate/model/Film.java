@@ -32,17 +32,4 @@ public class Film {
         genres.add(genre);
     }
 
-//    Set<Long> usersWhoLikes = new HashSet<>();
-//
-//    public Set<Long> getUsersWhoLikes() {
-//        return usersWhoLikes;
-//    }
-//
-//    public void addToUsersWhoLikes(long id) {
-//        usersWhoLikes.add(id);
-//    }
-//
-//    public void removeFromUsersWhoLikes(long id) {
-//        usersWhoLikes.remove(id);
-//    }
 }

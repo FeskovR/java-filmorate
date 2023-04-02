@@ -22,18 +22,4 @@ public class User {
         this.name = name;
         this.birthday = birthday;
     }
-
-    //    private final Set<Long> friends = new HashSet<>();
-//
-//    public Set<Long> getFriends() {
-//        return friends;
-//    }
-//
-//    public void addFriend(Long id) {
-//        friends.add(id);
-//    }
-//
-//    public void removeFriend(Long id) {
-//        friends.remove(id);
-//    }
 }

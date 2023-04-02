@@ -4,19 +4,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.friend.FriendDao;
-import ru.yandex.practicum.filmorate.storage.user.UserStorage;
+import ru.yandex.practicum.filmorate.storage.interfaces.FriendStorage;
+import ru.yandex.practicum.filmorate.storage.interfaces.UserStorage;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class UserService {
-    @Autowired
-    @Qualifier("UserDbStorage")
     private UserStorage userStorage;
+    private FriendStorage friendStorage;
+
     @Autowired
-    private FriendDao friendImpl;
+    public UserService(@Qualifier("UserDbStorage") UserStorage userStorage, FriendStorage friendStorage) {
+        this.userStorage = userStorage;
+        this.friendStorage = friendStorage;
+    }
 
     public List<User> findAll() {
         return userStorage.findAll();
@@ -56,7 +59,7 @@ public class UserService {
             throw new RuntimeException("Невозможно добавить пользователя в друзья т.к. один из пользователей не найден");
         }
 
-        friendImpl.addToFriends(userId1, userId2);
+        friendStorage.addToFriends(userId1, userId2);
     }
 
     public void deleteFromFriends(long userId1, long userId2) {
@@ -67,7 +70,7 @@ public class UserService {
             throw new RuntimeException("Невозможно удалить пользователя из друзей т.к. один из пользователей не найден");
         }
 
-        friendImpl.removeFromFriends(userId1, userId2);
+        friendStorage.removeFromFriends(userId1, userId2);
     }
 
     public List<User> findAllFriends(long userId) {
@@ -76,7 +79,7 @@ public class UserService {
         if (user == null)
             throw new RuntimeException("Пользователь не найден");
 
-        return friendImpl.findAllFriends(userId);
+        return friendStorage.findAllFriends(userId);
     }
 
     public List<User> commonFriends(long userId1, long userId2) {

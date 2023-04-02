@@ -1,18 +1,19 @@
-package ru.yandex.practicum.filmorate.storage.genre;
+package ru.yandex.practicum.filmorate.storage.impl.genre;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.storage.interfaces.GenreStorage;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class GenreImpl implements GenreDao {
-    JdbcTemplate jdbcTemplate;
+public class GenreDbStorage implements GenreStorage {
+    private final JdbcTemplate jdbcTemplate;
 
-    public GenreImpl(JdbcTemplate jdbcTemplate) {
+    public GenreDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 

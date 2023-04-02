@@ -3,17 +3,21 @@ package ru.yandex.practicum.filmorate.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.storage.genre.GenreDao;
+import ru.yandex.practicum.filmorate.storage.interfaces.GenreStorage;
 
 import java.util.List;
 
 @Service
 public class GenreService {
+    private GenreStorage genreStorage;
+
     @Autowired
-    GenreDao genreImpl;
+    public GenreService(GenreStorage genreStorage) {
+        this.genreStorage = genreStorage;
+    }
 
     public Genre getGenreById(int id) {
-        Genre genre = genreImpl.getGenreById(id);
+        Genre genre = genreStorage.getGenreById(id);
         if (genre == null) {
             throw new RuntimeException("Жанр не найден");
         }
@@ -21,6 +25,6 @@ public class GenreService {
     }
 
     public List<Genre> getAllGenres() {
-        return genreImpl.getAllGenres();
+        return genreStorage.getAllGenres();
     }
 }
