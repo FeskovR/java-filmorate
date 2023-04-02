@@ -11,7 +11,9 @@ import ru.yandex.practicum.filmorate.storage.interfaces.FilmStorage;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component("FilmDbStorage")
 @Slf4j
@@ -27,6 +29,7 @@ public class FilmDbStorage implements FilmStorage {
         String sqlQuery = "insert into films (name, description, release_date, duration, mpa_id) " +
                 "values (?, ?, ?, ?, ?)";
         int mpaId = film.getMpa().getId();
+        film.setGenres(getUniqueGenres(film.getGenres()));
 
         jdbcTemplate.update(sqlQuery,
                 film.getName(),
@@ -85,40 +88,48 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public List<Film> findAll() {
-        List<Film> films = new ArrayList<>();
-        String sqlQuery = "select * from films";
+        Map<Long, ArrayList<Genre>> filmGenres = new HashMap<>();
+        String genresSqlQuery = "select * " +
+                "from film_genre as fg " +
+                "join genre as g on fg.genre_id = g.genre_id ";
+        SqlRowSet genresRowSet = jdbcTemplate.queryForRowSet(genresSqlQuery);
+        while (genresRowSet.next()) {
+            long filmId = genresRowSet.getLong("film_id");
+            Genre genre = new Genre(genresRowSet.getInt("genre_id"),
+                    genresRowSet.getString("genre_name"));
+            if (!filmGenres.containsKey(filmId)) {
+                ArrayList<Genre> newGenreArrayList = new ArrayList<>();
+                newGenreArrayList.add(genre);
+                filmGenres.put(filmId, newGenreArrayList);
+            } else {
+                ArrayList<Genre> genreList = filmGenres.get(filmId);
+                genreList.add(genre);
+                filmGenres.remove(filmId);
+                filmGenres.put(filmId, genreList);
+            }
+        }
+
+        List<Film> filmList = new ArrayList<>();
+        String sqlQuery = "select * " +
+                "from films as f " +
+                "join mpa as m on f.mpa_id=m.mpa_id ";
         SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sqlQuery);
         while (rowSet.next()) {
-            LocalDate releaseDate = dateFormatter(rowSet.getString("release_date"));
-
-            String mpaSqlQuery = "select * from mpa where mpa_id = ?";
-            SqlRowSet mpaRowSet = jdbcTemplate.queryForRowSet(mpaSqlQuery, rowSet.getInt("mpa_id"));
-            Mpa mpa = null;
-            if (mpaRowSet.next()) {
-                mpa = new Mpa(mpaRowSet.getInt("mpa_id"), mpaRowSet.getString("mpa_name"));
-            }
-
-            Film film = new Film(rowSet.getLong("film_id"),
+            Mpa mpa = new Mpa(rowSet.getInt("mpa_id"),
+                    rowSet.getString("mpa_name"));
+            long filmId = rowSet.getLong("film_id");
+            Film film = new Film(filmId,
                     rowSet.getString("name"),
                     rowSet.getString("description"),
-                    releaseDate,
+                    dateFormatter(rowSet.getString("release_date")),
                     rowSet.getInt("duration"),
                     mpa);
-
-            String ratingSqlQuery = "select * from " +
-                    "film_genre as fg " +
-                    "left join genre as g on fg.genre_id=g.genre_id " +
-                    "where film_id = ?";
-            SqlRowSet genresRowSet = jdbcTemplate.queryForRowSet(ratingSqlQuery, film.getId());
-            while (genresRowSet.next()) {
-                Genre genre = new Genre(genresRowSet.getInt("genre_id"),
-                        genresRowSet.getString("genre_name"));
-                film.addGenre(genre);
+            if (filmGenres.containsKey(filmId)) {
+                film.setGenres(filmGenres.get(filmId));
             }
-
-            films.add(film);
+            filmList.add(film);
         }
-        return films;
+        return filmList;
     }
 
     @Override
@@ -156,7 +167,8 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public void deleteFilm(long id) {
-
+        String sqlQuery = "delete from films where film_id = ?";
+        jdbcTemplate.update(sqlQuery, id);
     }
 
     private LocalDate dateFormatter(String date) {
