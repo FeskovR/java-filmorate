@@ -12,12 +12,12 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.impl.film.FilmDbStorage;
-import ru.yandex.practicum.filmorate.storage.impl.friend.FriendDbStorage;
-import ru.yandex.practicum.filmorate.storage.impl.genre.GenreDbStorage;
-import ru.yandex.practicum.filmorate.storage.impl.like.LikeDbStorage;
-import ru.yandex.practicum.filmorate.storage.impl.mpa.MpaDbStorage;
-import ru.yandex.practicum.filmorate.storage.impl.user.UserDbStorage;
+import ru.yandex.practicum.filmorate.storage.impl.FilmDbStorage;
+import ru.yandex.practicum.filmorate.storage.impl.FriendDbStorage;
+import ru.yandex.practicum.filmorate.storage.impl.GenreDbStorage;
+import ru.yandex.practicum.filmorate.storage.impl.LikeDbStorage;
+import ru.yandex.practicum.filmorate.storage.impl.MpaDbStorage;
+import ru.yandex.practicum.filmorate.storage.impl.UserDbStorage;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -218,7 +218,7 @@ public class DbStorageTest {
         filmDbStorage.add(updatedFilm);
         userDbStorage.add(user);
         likeDbStorage.addLikeToFilm(2, 1);
-        List<Film> returnedTopFilms = likeDbStorage.getTopFilms(1);
+        List<Film> returnedTopFilms = filmDbStorage.getTopFilms(1);
         assertEquals(updatedFilm.getName(), returnedTopFilms.get(0).getName());
         assertEquals(updatedFilm.getDuration(), returnedTopFilms.get(0).getDuration());
         assertEquals(updatedFilm.getDescription(), returnedTopFilms.get(0).getDescription());

@@ -1,10 +1,10 @@
-package ru.yandex.practicum.filmorate.storage.impl.friend;
+package ru.yandex.practicum.filmorate.storage.impl;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.interfaces.FriendStorage;
+import ru.yandex.practicum.filmorate.storage.FriendStorage;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
